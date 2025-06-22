@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Магазин Вейпов</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <style>
+    body {
+      background-color: #1c2526;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 80px;
+    }
+    .container { min-height: 100vh; }
+    .nav { 
+      background-color: #2a3b3c; 
+      padding: 1rem; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      border-bottom-left-radius: 1.5rem; 
+      border-bottom-right-radius: 1.5rem; 
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+    }
+    .nav h1 { font-size: 1.75rem; font-weight: 700; margin: 0; }
+    .content { padding: 1rem; }
+    .category-section { margin-bottom: 2rem; }
+    .category-section h2 { 
+      font-size: 1.75rem; 
+      font-weight: 700; 
+      margin-bottom: 1rem; 
+      color: #00a8cc; 
+      text-transform: uppercase; 
+      border-bottom: 2px solid #00a8cc; 
+      padding-bottom: 0.5rem; 
+    }
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+      gap: 1rem; 
+    }
+    .card { 
+      background-color: #2a3b3c; 
+      border-radius: 1rem; 
+      padding: 1rem; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      transition: transform 0.2s, background-color 0.2s; 
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+    }
+    .card:hover { transform: translateY(-4px); background-color: #3c4f50; }
+    .card img { 
+      width: 8rem; 
+      height: 8rem; 
+      border-radius: 0.75rem; 
+      object-fit: cover; 
+      margin-bottom: 0.5rem; 
+    }
+    .card h3 { 
+      font-size: 1.125rem; 
+      font-weight: 500; 
+      text-align: center; 
+      margin-bottom: 0.5rem; 
+    }
+    .card button { 
+      background-color: #00a8cc; 
+      color: #ffffff; 
+      border: none; 
+      padding: 0.5rem 1rem; 
+      border-radius: 9999px; 
+      cursor: pointer; 
+      font-size: 0.875rem; 
+      transition: background-color 0.2s; 
+    }
+    .card button:hover { background-color: #0093b2; }
+    .flavors { margin-top: 1rem; width: 100%; }
+    .flavors ul { list-style: none; padding: 0; margin: 0; }
+    .flavors li { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 0.25rem 0; 
+      font-size: 0.875rem; 
+      color: #c4c4c4; 
+    }
+    .flavors li button { 
+      background: none; 
+      border: none; 
+      color: #00a8cc; 
+      cursor: pointer; 
+      font-size: 0.875rem; 
+      transition: color 0.2s; 
+    }
+    .flavors li button:hover { color: #0093b2; }
+    .manager-button { 
+      position: fixed; 
+      bottom: 0; 
+      left: 0; 
+      width: 100%; 
+      background: linear-gradient(90deg, #00a8cc, #007b9e); 
+      color: #ffffff; 
+      border: none; 
+      padding: 0.75rem; 
+      font-size: 1rem; 
+      cursor: pointer; 
+      z-index: 1000; 
+      transition: background 0.3s; 
+      text-align: center; 
+    }
+    .manager-button:hover { background: linear-gradient(90deg, #0093b2, #006b8c); }
+    .modal { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      bottom: 0; 
+      background-color: rgba(0, 0, 0, 0.7); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      z-index: 50; 
+      animation: fadeIn 0.3s ease-in-out; 
+    }
+    @keyframes fadeIn { 
+      from { opacity: 0; } 
+      to { opacity: 1; } 
+    }
+    .modal-content { 
+      background: linear-gradient(135deg, #2a3b3c, #3c4f50); 
+      border-radius: 1.5rem; 
+      padding: 1.5rem; 
+      width: 100%; 
+      max-width: 24rem; 
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); 
+      transform: translateY(0); 
+      animation: slideUp 0.3s ease-in-out; 
+    }
+    @keyframes slideUp { 
+      from { transform: translateY(20px); opacity: 0; } 
+      to { transform: translateY(0); opacity: 1; } 
+    }
+    .contact-options { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 1rem; 
+    }
+    .contact-button { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      background: linear-gradient(90deg, #0088cc, #006b9e); 
+      color: #ffffff; 
+      text-decoration: none; 
+      padding: 0.75rem 1.5rem; 
+      border-radius: 9999px; 
+      font-size: 1rem; 
+      transition: background 0.3s; 
+      width: 100%; 
+    }
+    .contact-button:hover { background: linear-gradient(90deg, #0077b2, #005b8c); }
+    .contact-button img { 
+      width: 24px; 
+      height: 24px; 
+      margin-right: 0.75rem; 
+    }
+    .error { color: #e74c3c; text-align: center; padding: 1rem; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    const { useState } = React;
+    const { createRoot } = ReactDOM;
+
+    const products = [
+      {
+        id: 1,
+        category: "Жидкости",
+        items: [
+          { id: 103, name: "LIT ENERGY", price: 400, image: "https://avatars.mds.yandex.net/i?id=0ba833cbc80c83137e1621c099ee2da9_l-5869878-images-thumbs&n=13", flavors: ["Кислые Мармеладные Червячки", "Клубника Банан", "Лесные Ягоды", "Малина Яблоко", "Спрайт Скиттлс", "Энергетик Виноград", "Энергетик Персик", "Энергетик Черника", "Энергетик Киви Яблоко"] },
+          { id: 104, name: "SO_KI", price: 400, image: "https://hookah-review.com/wp-content/uploads/2024/03/SO_KI-%D1%81%D0%BE%D1%87%D0%BD%D0%B0%D1%8F-%D0%B6%D0%B8%D0%B4%D0%BA%D0%BE%D1%81%D1%82%D1%8C-%D0%B4%D0%BB%D1%8F-%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D1%8B%D1%85-%D1%81%D0%B8%D0%B3%D0%B0%D1%80%D0%B5%D1%82-1-1024x576.jpg", flavors: ["Апельсин Грейпфрут", "Арбуз Земляника", "Вишнёвый Ветер", "Клубничный Милкшейк", "Морс Брусника", "Смородиновый Лимонад", "Черника Малина", "Черничная Конфета"] },
+          { id: 105, name: "CUBER", price: 400, image: "https://avatars.mds.yandex.net/i?id=cb015a04b15c32a3a1ed30fb4762b631_l-5221134-images-thumbs&n=13", flavors: ["Клубничное Мороженое", "Малиновый Йогурт"] },
+          { id: 106, name: "САМОУБИЙЦА", price: 450, image: "https://avatars.mds.yandex.net/i?id=9de466992aec8b1d8ab840faf1bf2668_l-7083727-images-thumbs&n=13", flavors: ["Ананас Кокос Лёд", "Кислая Клюква со Льдом", "Малина Смородина Лёд", "Манго Лёд", "Черника-Смородина Айс", "Чёрная Вишня Лёд"] },
+          { id: 109, name: "ЗЛАЯ МОНАШКА SOUR", price: 450, image: "https://sun9-43.userapi.com/impg/xvBF236yikJcK2lcx5rnd5B0hwtgJ-fzA_V7hA/OueZlo-G55Y.jpg?size=518x604&quality=95&sign=8f2fd5f1f6385d6fea82ee1022a6fa88&type=album", flavors: ["Кислая Вишня", "Медовая Дыня"] },
+          { id: 110, name: "ЗЛАЯ МОНАШКА ICE", price: 450, image: "https://bigshoper.net/wp-content/uploads/2025/06/photo-2025-06-18-08-03-15.jpg", flavors: ["Ананас Гранат Лёд", "Вишня Ананас Лёд", "Вишня Лёд", "Ежевика Лёд", "Земляника Лёд", "Киви Банан Лёд", "Клубника Арбуз Лёд", "Лесные Ягоды Лёд", "Малина Ежевика Лёд", "Малина Лёд", "Черника Лёд", "Энергетик Ежевика Лёд", "Энергетик Лёд"] },
+          { id: 112, name: "PODONKI CRISTAL", price: 450, image: "https://avatars.mds.yandex.net/i?id=f79a2f546d29698a303bc70785de78ea_l-5232187-images-thumbs&n=33&w=963&h=1284", flavors: ["Апельсиновое Драже", "Дыня Кокос", "Кислый Киви", "Ледяной Ананас", "Манго Апельсин", "Яблочный Холлс"] },
+          { id: 113, name: "XAM", price: 400, image: "https://avatars.mds.yandex.net/i?id=f15b726265331977ca5c63f6c0ea8c86_l-4338558-images-thumbs&n=13", flavors: ["Клубника Брусника", "Пепси Лайм", "Смородиновый Мармелад", "Черника Лимон"] },
+          { id: 114, name: "ИНДИВИDUALL", price: 450, image: "https://avatars.mds.yandex.net/i?id=9c3442b1d24e2af16bfe284cf5256b39_l-10313458-images-thumbs&n=13", flavors: ["Банановое Мороженое", "Жвачка Виноград", "Кислая Жвачка Яблоко", "Кислая Малиновая Вата", "Кислое Манго Клубника", "Кислые Червяки с Ананасом", "Ледяная Груша Яблоко", "Лесные Ягоды Эвкалипт", "Морозный Мохито", "Энергетик Черника"] },
+          { id: 115, name: "ПРОВИНЦИЯ", price: 400, image: "https://sun9-44.userapi.com/s/v1/if2/Dl0nRYfCx3Xbt42cWn4Oj4hYXCyeY4SUfyiY2OCgRGOMeeGnVFmEE65uBKRV_I4nH-ty2MkSzXLty8O_-8jj6dQ8.jpg?quality=95&as=32x19,48x28,72x42,108x63,160x94,240x140,360x211,480x281,540x316,640x374,720x421,1080x632,1280x749&from=bu&cs=1280x0", flavors: ["Виноград-Смородина (Сочи 93)", "Вишня-Хвоя (Красноярск 24)", "Кислое Яблоко (Новосибирск 54)", "Клубника-Лайм (Мурманск 51)", "Лесные Ягоды (Казань 16)", "Малина (Архангельск 30)", "Малиновая Газировка (Крым 82)", "Манго-Смородина (Екатеринбург 96)", "Персик-Клюква (Нижний Новгород 52)", "Тропические Фрукты (Тагил 66)"] },
+        ],
+      },
+      {
+        id: 2,
+        category: "Одноразовые устройства",
+        items: [
+          { id: 201, name: "MY PAFF 5000", price: 600, image: "https://via.placeholder.com/150/FF5733", flavors: ["Ананасовый Лёд", "Вишнёвый Лёд", "Ежевичный Лимонад", "Зеленое Яблоко", "Киви Маракуйя Гуава", "Малина Черника"] },
+          { id: 202, name: "DUFT 10000", price: 900, image: "https://mda-medusa.ru/upload/iblock/90c/hu1wlgkj5uaslak75rwaetxvgwqkh2k4.png", flavors: ["Клубника Кокос", "Кокосовое Мороженое", "Лимонный Тоник", "Яблочно-Грушевый Сидр"] },
+        ],
+      },
+      {
+        id: 3,
+        category: "Жевательный табак",
+        items: [
+          { id: 301, name: "STORM 220", price: 450, image: "https://avatars.mds.yandex.net/i?id=49eb7514657d94b5926c4f6e2e2e9994_l-11941915-images-thumbs&n=13", flavors: ["Кактус и Ананас", "Киви и Зелёное Яблоко", "Кислый Вишнёвый Мармелад", "Персик и Маракуйя", "Сливочно-Малиновое Мороженое", "Черничный Йогурт"] },
+          { id: 302, name: "RONIN 125", price: 450, image: "https://sun9-3.userapi.com/s/v1/ig2/j-aG6dYwB_bhGG4EIgGZwieT4YlApObE5tg8YTbpWQA0oLpYV7rJDqf6uHVI1imumYvES6k751RasBmo6Z2JRI8-.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440,2560x2560&from=bu&cs=1280x0", flavors: ["Cola", "Juicy Peach", "Pinkman", "Raspberry Jam", "Sweet Blueberry", "Tropics", "Tutti-Frutti"] },
+          { id: 304, name: "ISTERIKA 150", price: 450, image: "https://avatars.mds.yandex.net/i?id=651c81fcc4920fc5c47b5c3d45afcf16_l-4615646-images-thumbs&n=13", flavors: ["Апельсиновый Фреш", "Арбузный Смузи", "Бабл Гам", "Банан", "Изумрудный Виноград", "Кислая Вишня", "Медовая Дыня", "Тропические Фрукты"] },
+          { id: 305, name: "ШОК 150", price: 450, image: "https://static.insales-cdn.com/images/products/1/743/784302823/%D0%BC%D0%B0%D0%BD%D0%B3%D0%BE__4_.png", flavors: ["Бабл-гам", "Зелёное Яблоко", "Йогурт Банан-Персик", "Клубника-Кокос", "Манго", "Чёрная Смородина и Хвоя"] },
+        ],
+      },
+      {
+        id: 4,
+        category: "Многоразовые устройства",
+        items: [
+          { id: 401, name: "XROS 4 MINI", price: 1899, image: "https://megabuzz.ru/wp-content/uploads/2024/11/xros4mini-iceblue-768x768.png", flavors: ["Black", "Camo Silver", "Ice Blue", "Space Gray"] },
+        ],
+      },
+      {
+        id: 5,
+        category: "Картриджи",
+        items: [
+          { id: 501, name: "Картриджи XROS", price: 300, image: "https://cdn1.ozone.ru/s3/multimedia-4/6306046408.jpg", flavors: ["0.4 3мл", "0.6", "0.8"] },
+        ],
+      },
+    ];
+
+    function ProductCard({ items }) {
+      if (!items || !Array.isArray(items)) {
+        console.error('ProductCard: товары не найдены', { items });
+        return React.createElement('p', { className: 'error' }, 'Товары не найдены');
+      }
+
+      return React.createElement(
+        'div',
+        { className: 'grid' },
+        items.map(item => {
+          const [isOpen, setIsOpen] = React.useState(false);
+          if (!item || !item.id || !item.name || !item.price || !item.flavors) {
+            console.error('ProductCard: некорректный товар', { item });
+            return null;
+          }
+          return React.createElement(
+            'div',
+            { key: item.id, className: 'card' },
+            React.createElement('img', {
+              src: item.image || 'https://via.placeholder.com/150',
+              alt: item.name,
+              className: 'card img',
+            }),
+            React.createElement('h3', { className: 'card h3' }, `${item.name} - ${item.price} ₽`),
+            React.createElement(
+              'button',
+              {
+                onClick: () => {
+                  console.log('Тоггл панели вкусов для:', item.name);
+                  setIsOpen(!isOpen);
+                },
+                className: 'card button',
+              },
+              isOpen ? 'Скрыть позиции' : 'Показать позиции'
+            ),
+            isOpen && React.createElement(
+              'div',
+              { className: 'flavors' },
+              React.createElement(
+                'ul',
+                null,
+                (item.flavors || []).map((flavor, index) =>
+                  React.createElement(
+                    'li',
+                    { key: index },
+                    React.createElement('span', null, flavor)
+                  )
+                )
+              )
+            )
+          );
+        }).filter(Boolean)
+      );
+    }
+
+    function ContactModal({ isOpen, closeModal }) {
+      if (!isOpen) return null;
+      return React.createElement(
+        'div',
+        { className: 'modal', onClick: closeModal },
+        React.createElement(
+          'div',
+          { className: 'modal-content', onClick: e => e.stopPropagation() },
+          React.createElement(
+            'div',
+            { className: 'contact-options' },
+            React.createElement(
+              'a',
+              {
+                href: 'https://t.me/vozdyh_manager?start=order',
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                className: 'contact-button',
+                onClick: closeModal,
+              },
+              React.createElement('img', { src: 'https://telegram.org/img/t_logo.png', alt: 'Telegram' }),
+              'Менеджер (@vozdyh_manager)'
+            ),
+            React.createElement(
+              'a',
+              {
+                href: 'https://t.me/vozdyhmzk_bot?start=order',
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                className: 'contact-button',
+                onClick: closeModal,
+              },
+              React.createElement('img', { src: 'https://telegram.org/img/t_logo.png', alt: 'Telegram' }),
+              'Бот (@vozdyhmzk_bot)'
+            )
+          )
+        )
+      );
+    }
+
+    function App() {
+      const [isContactModalOpen, setContactModalOpen] = React.useState(false);
+
+      const openContactModal = () => {
+        console.log('Открытие модального окна связи');
+        setContactModalOpen(true);
+      };
+      const closeContactModal = () => setContactModalOpen(false);
+
+      return React.createElement(
+        'div',
+        { className: 'container' },
+        React.createElement(
+          'nav',
+          { className: 'nav' },
+          React.createElement('h1', null, 'Vape Shop')
+        ),
+        React.createElement(
+          'div',
+          { className: 'content' },
+          products.map(product => 
+            React.createElement(
+              'div',
+              { key: product.id, className: 'category-section' },
+              React.createElement('h2', null, product.category),
+              product.items.length > 0
+                ? React.createElement(ProductCard, { items: product.items })
+                : React.createElement('p', { className: 'error' }, 'Товары в этой категории отсутствуют')
+            )
+          )
+        ),
+        React.createElement(ContactModal, {
+          isOpen: isContactModalOpen,
+          closeModal: closeContactModal,
+        }),
+        React.createElement(
+          'button',
+          {
+            onClick: openContactModal,
+            className: 'manager-button',
+          },
+          'Связаться с менеджером'
+        )
+      );
+    }
+
+    try {
+      const root = createRoot(document.getElementById('root'));
+      root.render(React.createElement(App));
+    } catch (e) {
+      console.error('Ошибка рендеринга приложения:', e);
+      document.getElementById('root').innerHTML = '<p class="error">Ошибка загрузки приложения. Пожалуйста, обновите страницу или свяжитесь с поддержкой.</p>';
+    }
+  </script>
+</body>
+</html>
